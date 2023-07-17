@@ -57,7 +57,9 @@ NOPASSWD in sudoers. It is a little janky, but it works and works well.
 
 For the SSH keys, generate a pair on both systems and specify the private key of the client aka the computer that this tool is running on.
 
-You can do both with `ssh-keygen-` and a command is: `ssh-keygen -b 2048 -t rsa`
+You can do both with `ssh-keygen` and a command is: `ssh-keygen -b 2048 -t rsa`
+
+RSA-2048 is what I recommend minimum.
 
 On the client run `ssh-copy-id user@server` to copy the ssh public key to your client.
 
