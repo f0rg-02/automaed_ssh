@@ -11,6 +11,12 @@ git clone https://github.com/f0rg-02/automaed_ssh
 cd automaed_ssh && go build
 ```
 
+To run, the program only takes one argument which is the yaml file.
+
+```
+./auto_ssh -f config.yaml
+```
+
 If there are any issues that are thrown, please file an issue, but try to troubleshoot. I am aware that
 YAML errors are vague and a pita to understandd sometimes especially for newer people.
 
