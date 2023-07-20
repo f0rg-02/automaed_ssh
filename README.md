@@ -2,6 +2,10 @@
 I created this tool for the purpose of automating the setup of Linux Servers and various other tasks.
 The idea was to keep it really simple and use SSH. I do highly encourage people to please read the code.
 
+Don't think I do anything good enough for donations, but if you would like to support me and my future work I do have a buymeacofee:
+
+<a href="https://www.buymeacoffee.com/alex_f0rg"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=alex_f0rg&button_colour=FF5F5F&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
 To compile, I did use go 1.20 which is what I installed on my Debian server.
 
 You can compile this program by running:
