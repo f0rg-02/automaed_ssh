@@ -19,6 +19,23 @@ import (
 	"github.com/bramvdbogaerde/go-scp/auth"
 )
 
+
+/*
+Written by: f0rg/Alex
+Mastodon is: https://infosec.exchange/@alex_02
+Buymeacoffee: https://www.buymeacoffee.com/alex_f0rg
+
+A lot of this code I either borrowed from SO and the libraries or I 
+reused from other programs that I've written. The whole SO and library
+codes is because I would've written the exact same thing and couldn't be
+bothered to write the same code by hand. Feel free to edit it as is and reuse
+the code. I don't really care too much about getting credit since we are programmers
+and we copy each other's codes. I do wish that you don't explicity take full credit
+as being your own and if you straight up copy and paste some of this code for lets say
+your programming homework, that is on you and teachers always know when someone
+is cheating and copying code.
+*/
+
 type Config struct {
 	Server   string `yaml:"server"`
 	Port     string `yaml:"port"`
