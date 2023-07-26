@@ -19,13 +19,12 @@ import (
 	"github.com/bramvdbogaerde/go-scp/auth"
 )
 
-
 /*
 Written by: f0rg/Alex
 Mastodon is: https://infosec.exchange/@alex_02
 Buymeacoffee: https://www.buymeacoffee.com/alex_f0rg
 
-A lot of this code I either borrowed from SO and the libraries or I 
+A lot of this code I either borrowed from SO and the libraries or I
 reused from other programs that I've written. The whole SO and library
 codes is because I would've written the exact same thing and couldn't be
 bothered to write the same code by hand. Feel free to edit it as is and reuse
@@ -113,7 +112,7 @@ func main() {
 
 	client, err := goph.New(config.User, config.Server, auth)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	// Defer closing the network connection.
@@ -126,8 +125,9 @@ func main() {
 		if password == "" { // Checks if the variable is empty or not.
 			password, err = credentials()
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
+
 		}
 
 		// Execute your command.
@@ -138,8 +138,9 @@ func main() {
 		_, err := client.Run("echo " + password + "| sudo -S apt update")
 
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
+
 		fmt.Println("Updating compeleted")
 	} else {
 		fmt.Println("User specified update to false")
@@ -151,8 +152,9 @@ func main() {
 		if password == "" { // Checks if the variable is empty or not.
 			password, err = credentials()
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
+
 		}
 
 		// Execute your command.
@@ -163,7 +165,7 @@ func main() {
 		_, err := client.Run("echo " + password + "| sudo -S apt upgrade --assume-yes")
 
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 		fmt.Println("Upgrading completed")
@@ -176,8 +178,9 @@ func main() {
 		if password == "" { // Checks if the variable is empty or not.
 			password, err = credentials()
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
+
 		}
 
 		for i := range config.APT_Packages {
@@ -193,8 +196,9 @@ func main() {
 			_, err := client.Run("echo " + password + "| sudo -S apt install --assume-yes " + install)
 
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
+
 			fmt.Println("Done installing: ", install)
 		}
 	} else {
@@ -244,8 +248,7 @@ func UploadFiles(server string, username string, priv_key string, source_file st
 	// Connect to the remote server
 	err := client.Connect()
 	if err != nil {
-		fmt.Println("Couldn't establish a connection to the remote server ", err)
-		return
+		log.Fatal(err)
 	}
 
 	// Open a file
@@ -264,34 +267,34 @@ func UploadFiles(server string, username string, priv_key string, source_file st
 	err = client.CopyFromFile(context.Background(), *f, destination_file, "0655")
 
 	if err != nil {
-		fmt.Println("Error while copying file ", err)
+		log.Fatal(err)
 	}
 }
 
 // Taken from here: https://stackoverflow.com/a/32768479
 
 func credentials() (string, error) {
-	fmt.Print("Enter Password: ")
-	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
+	fmt.Print("Enter Password: ")                              // Ask for password
+	bytePassword, err := term.ReadPassword(int(syscall.Stdin)) // Use term to read file. Check for any errors.
 	if err != nil {
 		return "", err
 	}
 
-	password := string(bytePassword)
+	password := string(bytePassword) // Convert the bytes to a string so we can return the password.
 	return strings.TrimSpace(password + "\n"), nil
 }
 
 func ChkYaml(file *string) Config {
 	var config Config
-	_, err := os.Stat(*file)
-	if err == nil {
+	_, err := os.Stat(*file) // check if config exists
+	if err == nil {          // If exists, read file
 		data, err := os.ReadFile(*file)
-		if err != nil {
-			panic(err)
+		if err != nil { // Check for any errors reading the file
+			log.Fatal(err)
 		}
 
-		if err := yaml.Unmarshal(data, &config); err != nil {
-			panic(err)
+		if err := yaml.Unmarshal(data, &config); err != nil { // Try to unmarshal. Check for any errors.
+			log.Fatal(err)
 		}
 	}
 	return config
