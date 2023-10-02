@@ -72,5 +72,3 @@ You can do both with `ssh-keygen` and a command is: `ssh-keygen -b 2048 -t rsa`
 RSA-2048 is what I recommend minimum.
 
 On the client run `ssh-copy-id user@server` to copy the ssh public key to your client.
-
-#### TODO: Write a simple util key to generate ssh keys and copy them to the client all on the client end (Will get to this once I find time).
