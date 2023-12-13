@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -11,12 +10,8 @@ import (
 	"time"
 
 	"github.com/melbahja/goph"
-	"golang.org/x/crypto/ssh"
 	"golang.org/x/term"
 	"gopkg.in/yaml.v3"
-
-	scp "github.com/bramvdbogaerde/go-scp"
-	"github.com/bramvdbogaerde/go-scp/auth"
 )
 
 /*
@@ -91,19 +86,6 @@ func main() {
 
 	config := ChkYaml(file)
 
-	if config.Upload {
-
-		for _, file := range config.Files.File {
-			// Upload files using the go-scp library.
-			fmt.Printf("Uploading file: %s to destination %s on server %s\n", file.Source, file.Destinatin, config.Server)
-			UploadFiles(config.Server+":"+config.Port, config.User, config.Key_Path, file.Source, file.Destinatin)
-			fmt.Println("Done uploading")
-		}
-
-	} else {
-		fmt.Println("User specified upload to false")
-	}
-
 	// Start new ssh connection with private key.
 	auth, err := goph.Key(config.Key_Path, "")
 	if err != nil {
@@ -118,6 +100,28 @@ func main() {
 	// Defer closing the network connection.
 	defer client.Close()
 
+	// Check if upload was specified
+	if config.Upload {
+
+		for _, file := range config.Files.File {
+			// Upload files
+			fmt.Printf("Uploading file: %s to destination %s on server %s\n", file.Source, file.Destinatin, config.Server)
+			err := client.Upload(file.Source, file.Destinatin) // goph does have upload and download in the library
+
+			if err != nil { // error was returned
+				log.Fatal(err) // Print error and exit
+			} else {
+				fmt.Println("Done uploading")
+
+			}
+		}
+
+	} else {
+		fmt.Println("User specified upload to false")
+	}
+
+	// I usually do something like sudo apt update && sudo apt upgrade --assume-yes
+	// But for this, it should be specified seperately in the yaml
 	if config.APT_Update { // Check if true or false in config.yaml.
 		// If true, apt update
 		// Get password
@@ -232,42 +236,6 @@ func main() {
 		}
 	} else {
 		fmt.Println("No commands were specified")
-	}
-}
-
-func UploadFiles(server string, username string, priv_key string, source_file string, destination_file string) {
-	// Use SSH key authentication from the auth package
-	// we ignore the host key in this example, please change this if you use this library
-	clientConfig, _ := auth.PrivateKey(username, priv_key, ssh.InsecureIgnoreHostKey())
-
-	// For other authentication methods see ssh.ClientConfig and ssh.AuthMethod
-
-	// Create a new SCP client
-	client := scp.NewClient(server, &clientConfig)
-
-	// Connect to the remote server
-	err := client.Connect()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Open a file
-	f, _ := os.Open(source_file)
-
-	// Close client connection after the file has been copied
-	defer client.Close()
-
-	// Close the file after it has been copied
-	defer f.Close()
-
-	// Finaly, copy the file over
-	// Usage: CopyFromFile(context, file, remotePath, permission)
-
-	// the context can be adjusted to provide time-outs or inherit from other contexts if this is embedded in a larger application.
-	err = client.CopyFromFile(context.Background(), *f, destination_file, "0655")
-
-	if err != nil {
-		log.Fatal(err)
 	}
 }
 
